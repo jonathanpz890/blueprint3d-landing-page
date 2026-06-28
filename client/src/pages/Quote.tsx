@@ -743,7 +743,7 @@ export const Quote: React.FC<QuoteProps> = ({ pageParams, clearPageParams, setCu
     setModels([]);
     setActiveModelId(null);
     setSuccess(false);
-    setForm({ name: '', email: '', comments: '' });
+    setForm({ name: '', email: '', phone: '', comments: '' });
     setThingiverseUrl('');
     setThingiverseName('');
     didPreloadRef.current = false;

@@ -71,7 +71,7 @@ function KpiCard({
             />
           )}
         </Box>
-        <Typography variant="h4" fontWeight="bold" sx={{ color, mb: 0.5, lineHeight: 1.1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', color, mb: 0.5, lineHeight: 1.1 }}>
           {value}
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.78rem' }}>
@@ -91,11 +91,11 @@ function FunnelBar({
   return (
     <Box sx={{ mb: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.75, alignItems: 'center' }}>
-        <Typography variant="body2" fontWeight="medium" sx={{ color: 'text.primary', fontSize: '0.82rem' }}>
+        <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.primary', fontSize: '0.82rem' }}>
           {label}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant="body2" fontWeight="bold" sx={{ color }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', color }}>
             {count.toLocaleString()}
           </Typography>
           {pct && (
@@ -217,7 +217,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4, flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h5" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
             <BarChart2 size={22} style={{ color: '#6366f1' }} />
             Analytics Overview
           </Typography>
@@ -246,7 +246,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
 
       {/* KPI Row */}
       <Grid container spacing={2} sx={{ mb: 4 }}>
-        <Grid item xs={6} sm={3}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <KpiCard
             icon={<Users size={18} />}
             label="Total Sessions"
@@ -254,7 +254,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
             color="#6366f1"
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <KpiCard
             icon={<Eye size={18} />}
             label="Page Views"
@@ -262,7 +262,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
             color="#06b6d4"
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <KpiCard
             icon={<ShoppingCart size={18} />}
             label="Orders Placed"
@@ -271,7 +271,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
             color="#22c55e"
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <KpiCard
             icon={f && f.abandonmentRate > 50 ? <TrendingDown size={18} /> : <TrendingUp size={18} />}
             label="Quote Abandonment"
@@ -285,10 +285,10 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
 
       <Grid container spacing={3}>
         {/* Events Sparkline */}
-        <Grid item xs={12} md={7}>
+        <Grid size={{ xs: 12, md: 7 }}>
           <Card sx={{ bgcolor: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Zap size={16} style={{ color: '#6366f1' }} /> Events Over Time
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
@@ -300,37 +300,37 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
         </Grid>
 
         {/* Other Events */}
-        <Grid item xs={12} md={5}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Card sx={{ bgcolor: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 2 }}>
                 Other Events
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, bgcolor: 'rgba(255,255,255,0.04)', borderRadius: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: '#a78bfa' }}>
                     <PenTool size={16} />
-                    <Typography variant="body2" fontWeight="medium">Modeling Requests</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>Modeling Requests</Typography>
                   </Box>
-                  <Typography variant="h6" fontWeight="bold" sx={{ color: '#a78bfa' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#a78bfa' }}>
                     {analytics?.otherEvents.modelingSubmitted || 0}
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, bgcolor: 'rgba(255,255,255,0.04)', borderRadius: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: '#ec4899' }}>
                     <MessageSquare size={16} />
-                    <Typography variant="body2" fontWeight="medium">Contact Submissions</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>Contact Submissions</Typography>
                   </Box>
-                  <Typography variant="h6" fontWeight="bold" sx={{ color: '#ec4899' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#ec4899' }}>
                     {analytics?.otherEvents.contactSubmitted || 0}
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1.5, bgcolor: 'rgba(255,255,255,0.04)', borderRadius: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: '#06b6d4' }}>
                     <Mouse size={16} />
-                    <Typography variant="body2" fontWeight="medium">Models Explored</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>Models Explored</Typography>
                   </Box>
-                  <Typography variant="h6" fontWeight="bold" sx={{ color: '#06b6d4' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#06b6d4' }}>
                     {analytics?.topExploreModels.reduce((s, m) => s + m.opens, 0) || 0}
                   </Typography>
                 </Box>
@@ -340,10 +340,10 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
         </Grid>
 
         {/* Quote Funnel */}
-        <Grid item xs={12} md={5}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Card sx={{ bgcolor: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <TrendingUp size={16} style={{ color: '#f97316' }} /> Quote Funnel
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 3 }}>
@@ -374,11 +374,11 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
               <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.06)' }} />
               <Box sx={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
                 <Box>
-                  <Typography variant="h6" fontWeight="bold" sx={{ color: '#22c55e' }}>{f?.conversionRate || 0}%</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#22c55e' }}>{f?.conversionRate || 0}%</Typography>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>Conversion</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="h6" fontWeight="bold" sx={{ color: f && f.abandonmentRate > 50 ? '#ef4444' : '#f97316' }}>{f?.abandonmentRate || 0}%</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: f && f.abandonmentRate > 50 ? '#ef4444' : '#f97316' }}>{f?.abandonmentRate || 0}%</Typography>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>Abandonment</Typography>
                 </Box>
               </Box>
@@ -387,10 +387,10 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
         </Grid>
 
         {/* Page Views */}
-        <Grid item xs={12} md={7}>
+        <Grid size={{ xs: 12, md: 7 }}>
           <Card sx={{ bgcolor: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3, height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Eye size={16} style={{ color: '#06b6d4' }} /> Page Views
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 3 }}>
@@ -416,7 +416,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5, alignItems: 'center' }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: info.color }} />
-                            <Typography variant="body2" fontWeight="medium" sx={{ color: 'text.primary', fontSize: '0.8rem' }}>
+                            <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.primary', fontSize: '0.8rem' }}>
                               {info.label}
                             </Typography>
                           </Box>
@@ -426,7 +426,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
                                 {pg.uniqueSessions} uniq.
                               </Typography>
                             </Tooltip>
-                            <Typography variant="body2" fontWeight="bold" sx={{ color: info.color, minWidth: 32, textAlign: 'right' }}>
+                            <Typography variant="body2" sx={{ fontWeight: 'bold', color: info.color, minWidth: 32, textAlign: 'right' }}>
                               {pg.views}
                             </Typography>
                           </Box>
@@ -447,10 +447,10 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ analytics, loading, 
         </Grid>
 
         {/* Top Explored Models */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Card sx={{ bgcolor: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 3 }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 0.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Mouse size={16} style={{ color: '#06b6d4' }} /> Top Explored Models
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
