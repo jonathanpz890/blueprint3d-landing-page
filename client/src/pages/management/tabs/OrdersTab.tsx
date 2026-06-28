@@ -8,6 +8,7 @@ import { useLanguage } from '../../../context/LanguageContext';
 import type { Order } from '../types';
 import { parseSTLAsync, type STLModelData } from '../../../components/STLParser';
 import { ModelViewer } from '../../../components/ModelViewer';
+import { SERVER_BASE } from '../../../utils/api';
 
 interface OrderRowPreviewProps {
   model: {
@@ -26,9 +27,9 @@ const OrderRowPreview: React.FC<OrderRowPreviewProps> = ({ model }) => {
     const fetchAndParse = async () => {
       setLoading(true);
       try {
-        let res = await fetch(`http://localhost:5001/uploads/${model.fileKey}`);
+        let res = await fetch(`${SERVER_BASE}/uploads/${model.fileKey}`);
         if (!res.ok) {
-          res = await fetch(`http://localhost:5001/temp/uploads/${model.fileKey}`);
+          res = await fetch(`${SERVER_BASE}/temp/uploads/${model.fileKey}`);
         }
         if (!res.ok) throw new Error('File not found');
         const buffer = await res.arrayBuffer();

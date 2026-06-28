@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { PenTool, Box, RefreshCw, Send, CheckCircle, FileText, Compass, HeartHandshake } from 'lucide-react';
+import { API_BASE } from '../utils/api';
 
 interface ModelingProps {
   setCurrentPage?: (page: string) => void;
@@ -26,7 +27,7 @@ export const Modeling: React.FC<ModelingProps> = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:5001/api/modeling-requests', {
+      const res = await fetch(`${API_BASE}/modeling-requests`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

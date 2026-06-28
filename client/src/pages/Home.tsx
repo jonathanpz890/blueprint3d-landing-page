@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Cpu, Zap, Palette, Shield, ChevronRight, Layers, Box, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { HomeModelViewer } from '../components/HomeModelViewer';
+import { API_BASE } from '../utils/api';
 
 interface HomeProps {
   setCurrentPage: (page: string) => void;
@@ -99,7 +100,7 @@ export const Home: React.FC<HomeProps> = ({ setCurrentPage }) => {
   useEffect(() => {
     const fetchColors = async () => {
       try {
-        const res = await fetch('http://localhost:5001/api/filaments');
+        const res = await fetch(`${API_BASE}/filaments`);
         if (!res.ok) throw new Error('Failed to fetch filaments catalog');
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {

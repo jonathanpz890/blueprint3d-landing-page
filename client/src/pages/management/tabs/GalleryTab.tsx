@@ -7,6 +7,7 @@ import {
 import { Plus, Edit2, Trash2, Upload } from 'lucide-react';
 import { useLanguage } from '../../../context/LanguageContext';
 import type { GalleryItem, Order } from '../types';
+import { API_BASE } from '../../../utils/api';
 
 interface GalleryTabProps {
   gallery: GalleryItem[];
@@ -50,7 +51,7 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ gallery, orders, onSave,
     form.append('file', file);
 
     try {
-      const res = await fetch('http://localhost:5001/api/upload/image', {
+      const res = await fetch(`${API_BASE}/upload/image`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: form

@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { ModelViewer } from '../components/ModelViewer';
 import { parseSTLAsync, type STLModelData } from '../components/STLParser';
 import { trackEvent } from '../utils/analytics';
+import { API_BASE } from '../utils/api';
 
 interface ExploreProps {
   setCurrentPage: (page: string, params?: any) => void;
@@ -84,11 +85,11 @@ export const Explore: React.FC<ExploreProps> = ({ setCurrentPage }) => {
     setHasMore(true);
     try {
       const category = CATEGORIES.find(c => c.id === activeCategory);
-      let endpoint = 'http://localhost:5001/api/models/popular?page=1';
+      let endpoint = `${API_BASE}/models/popular?page=1`;
       
       // If we have a category filter, fetch via search with category tag
       if (category && category.id !== 'all') {
-        endpoint = `http://localhost:5001/api/models/search?q=${encodeURIComponent(category.searchTag)}&page=1`;
+        endpoint = `${API_BASE}/models/search?q=${encodeURIComponent(category.searchTag)}&page=1`;
       }
       
       const response = await fetch(endpoint);
@@ -121,7 +122,7 @@ export const Explore: React.FC<ExploreProps> = ({ setCurrentPage }) => {
     setPage(1);
     setHasMore(true);
     try {
-      const response = await fetch(`http://localhost:5001/api/models/search?q=${encodeURIComponent(searchQuery)}&page=1`);
+      const response = await fetch(`${API_BASE}/models/search?q=${encodeURIComponent(searchQuery)}&page=1`);
       if (!response.ok) {
         throw new Error('Failed to perform search query');
       }
@@ -146,13 +147,13 @@ export const Explore: React.FC<ExploreProps> = ({ setCurrentPage }) => {
     try {
       let endpoint = '';
       if (searchQuery.trim()) {
-        endpoint = `http://localhost:5001/api/models/search?q=${encodeURIComponent(searchQuery)}&page=${nextPage}`;
+        endpoint = `${API_BASE}/models/search?q=${encodeURIComponent(searchQuery)}&page=${nextPage}`;
       } else {
         const category = CATEGORIES.find(c => c.id === activeCategory);
         if (category && category.id !== 'all') {
-          endpoint = `http://localhost:5001/api/models/search?q=${encodeURIComponent(category.searchTag)}&page=${nextPage}`;
+          endpoint = `${API_BASE}/models/search?q=${encodeURIComponent(category.searchTag)}&page=${nextPage}`;
         } else {
-          endpoint = `http://localhost:5001/api/models/popular?page=${nextPage}`;
+          endpoint = `${API_BASE}/models/popular?page=${nextPage}`;
         }
       }
 
@@ -216,7 +217,7 @@ export const Explore: React.FC<ExploreProps> = ({ setCurrentPage }) => {
     setStlModelData(null);
 
     // Call the server download proxy route to stream the file as binary
-    fetch(`http://localhost:5001/api/models/download?url=${encodeURIComponent(selectedFile.download_url)}`)
+    fetch(`${API_BASE}/models/download?url=${encodeURIComponent(selectedFile.download_url)}`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`Failed to load file: status ${res.status}`);
@@ -265,7 +266,7 @@ export const Explore: React.FC<ExploreProps> = ({ setCurrentPage }) => {
     // Parallel fetch images & files
     const fetchFiles = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/models/files/${model.id}`);
+        const response = await fetch(`${API_BASE}/models/files/${model.id}`);
         if (!response.ok) {
           throw new Error('Failed to load model file catalog');
         }
@@ -286,7 +287,7 @@ export const Explore: React.FC<ExploreProps> = ({ setCurrentPage }) => {
     const fetchImages = async () => {
       setLoadingImages(true);
       try {
-        const response = await fetch(`http://localhost:5001/api/models/images/${model.id}`);
+        const response = await fetch(`${API_BASE}/models/images/${model.id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch images');
         }

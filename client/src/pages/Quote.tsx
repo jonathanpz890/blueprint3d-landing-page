@@ -4,6 +4,7 @@ import { parseSTLAsync, type STLModelData } from '../components/STLParser';
 import { ModelViewer } from '../components/ModelViewer';
 import { useLanguage } from '../context/LanguageContext';
 import { trackEvent } from '../utils/analytics';
+import { API_BASE } from '../utils/api';
 
 type MaterialType = 'PLA' | 'PETG' | 'TPU';
 type LayerHeightType = 0.12 | 0.20 | 0.28;
@@ -134,7 +135,7 @@ export const Quote: React.FC<QuoteProps> = ({ pageParams, clearPageParams, setCu
   useEffect(() => {
     const fetchColors = async () => {
       try {
-        const res = await fetch('http://localhost:5001/api/filaments');
+        const res = await fetch(`${API_BASE}/filaments`);
         if (!res.ok) throw new Error('Failed to fetch filaments catalog');
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
@@ -235,7 +236,7 @@ export const Quote: React.FC<QuoteProps> = ({ pageParams, clearPageParams, setCu
     console.log(`Preloading ${filesToLoad.length} STL file(s) onto the Quote page.`);
 
     const downloadPromises = filesToLoad.map(fileInfo => {
-      return fetch(`http://localhost:5001/api/models/download?url=${encodeURIComponent(fileInfo.url)}`)
+      return fetch(`${API_BASE}/models/download?url=${encodeURIComponent(fileInfo.url)}`)
         .then(res => {
           if (!res.ok) {
             throw new Error(`Failed to download ${fileInfo.name}: status ${res.status}`);
@@ -469,7 +470,7 @@ export const Quote: React.FC<QuoteProps> = ({ pageParams, clearPageParams, setCu
     }
 
     try {
-      const response = await fetch('http://localhost:5001/api/slice', {
+      const response = await fetch(`${API_BASE}/slice`, {
         method: 'POST',
         body: formData,
       });
@@ -694,7 +695,7 @@ export const Quote: React.FC<QuoteProps> = ({ pageParams, clearPageParams, setCu
     };
 
     try {
-      const response = await fetch('http://localhost:5001/api/orders', {
+      const response = await fetch(`${API_BASE}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)

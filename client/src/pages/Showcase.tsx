@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tag, Settings } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { API_BASE } from '../utils/api';
 
 interface ShowcaseProps {
   setCurrentPage: (page: string) => void;
@@ -27,7 +28,7 @@ export const Showcase: React.FC<ShowcaseProps> = ({ setCurrentPage }) => {
   useEffect(() => {
     const fetchShowcase = async () => {
       try {
-        const res = await fetch('http://localhost:5001/api/gallery');
+        const res = await fetch(`${API_BASE}/gallery`);
         if (!res.ok) throw new Error('API failed');
         const json = await res.json();
         if (json.success && json.data && json.data.length > 0) {

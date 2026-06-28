@@ -19,6 +19,7 @@ import { AnalyticsTab } from './tabs/AnalyticsTab';
 import { OrderDetailsModal } from './components/OrderDetailsModal';
 import type { Order, Filament, GalleryItem, ManagementProps, ModelingRequest } from './types';
 import { Alert, Snackbar } from '@mui/material';
+import { API_BASE } from '../../utils/api';
 
 const cacheRtl = createCache({
   key: 'muirtl',
@@ -64,10 +65,10 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
 
     try {
       const [resOrders, resFilaments, resGallery, resModeling] = await Promise.all([
-        fetch('http://localhost:5001/api/orders', { headers }),
-        fetch('http://localhost:5001/api/filaments'),
-        fetch('http://localhost:5001/api/gallery'),
-        fetch('http://localhost:5001/api/modeling-requests', { headers })
+        fetch(`${API_BASE}/orders`, { headers }),
+        fetch(`${API_BASE}/filaments`),
+        fetch(`${API_BASE}/gallery`),
+        fetch(`${API_BASE}/modeling-requests`, { headers })
       ]);
 
       if (!resOrders.ok) throw new Error('Failed to load orders');
@@ -102,7 +103,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
     setAnalyticsLoading(true);
     setAnalyticsError(null);
     try {
-      const res = await fetch(`http://localhost:5001/api/analytics?days=${days}`, {
+      const res = await fetch(`${API_BASE}/analytics?days=${days}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to load analytics');
@@ -125,7 +126,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
 
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/orders/${orderId}/status`, {
+      const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ status: newStatus })
@@ -144,7 +145,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
 
   const handleUpdateModelingRequestStatus = async (id: string, newStatus: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/modeling-requests/${id}/status`, {
+      const res = await fetch(`${API_BASE}/modeling-requests/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ status: newStatus })
@@ -159,7 +160,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
 
   const handleToggleFilament = async (filamentId: string, property: 'stock' | 'active', currentValue: boolean) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/filaments/${filamentId}`, {
+      const res = await fetch(`${API_BASE}/filaments/${filamentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ [property]: !currentValue })
@@ -173,7 +174,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
   };
 
   const handleSaveFilament = async (filamentData: Partial<Filament>, isNew: boolean) => {
-    const url = isNew ? 'http://localhost:5001/api/filaments' : `http://localhost:5001/api/filaments/${filamentData.id}`;
+    const url = isNew ? `${API_BASE}/filaments` : `${API_BASE}/filaments/${filamentData.id}`;
     const method = isNew ? 'POST' : 'PUT';
 
     try {
@@ -198,7 +199,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
 
   const handleDeleteFilament = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/filaments/${id}`, {
+      const res = await fetch(`${API_BASE}/filaments/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -211,7 +212,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
   };
 
   const handleSaveGalleryItem = async (item: Partial<GalleryItem>, isNew: boolean) => {
-    const url = isNew ? 'http://localhost:5001/api/gallery' : `http://localhost:5001/api/gallery/${item.id}`;
+    const url = isNew ? `${API_BASE}/gallery` : `${API_BASE}/gallery/${item.id}`;
     const method = isNew ? 'POST' : 'PUT';
 
     try {
@@ -236,7 +237,7 @@ export const Management: React.FC<ManagementProps> = ({ setCurrentPage }) => {
   const handleDeleteGalleryItem = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
     try {
-      const res = await fetch(`http://localhost:5001/api/gallery/${id}`, {
+      const res = await fetch(`${API_BASE}/gallery/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

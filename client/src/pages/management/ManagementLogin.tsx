@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 import { Lock, ShieldAlert, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { API_BASE } from '../../utils/api';
 
 interface ManagementLoginProps {
   onLoginSuccess: (token: string) => void;
@@ -21,7 +22,7 @@ export const ManagementLogin: React.FC<ManagementLoginProps> = ({ onLoginSuccess
     setAuthLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5001/api/auth/login', {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })

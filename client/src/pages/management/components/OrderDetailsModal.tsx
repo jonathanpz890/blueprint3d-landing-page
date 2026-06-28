@@ -8,6 +8,7 @@ import { useLanguage } from '../../../context/LanguageContext';
 import type { Order } from '../types';
 import { parseSTLAsync, type STLModelData } from '../../../components/STLParser';
 import { ModelViewer } from '../../../components/ModelViewer';
+import { SERVER_BASE } from '../../../utils/api';
 
 interface OrderModelPreviewProps {
   fileKey?: string;
@@ -42,9 +43,9 @@ const OrderModelPreview: React.FC<OrderModelPreviewProps> = ({
       setLoading(true); setError(null);
       try {
         // Try permanent storage first, fallback to temporary storage
-        let res = await fetch(`http://localhost:5001/uploads/${fileKey}`);
+        let res = await fetch(`${SERVER_BASE}/uploads/${fileKey}`);
         if (!res.ok) {
-          res = await fetch(`http://localhost:5001/temp/uploads/${fileKey}`);
+          res = await fetch(`${SERVER_BASE}/temp/uploads/${fileKey}`);
         }
         if (!res.ok) throw new Error('File not found');
         const buffer = await res.arrayBuffer();
@@ -132,14 +133,14 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, ope
 
     const checkFile = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/uploads/${activeModel.fileKey}`, { method: 'HEAD' });
+        const res = await fetch(`${SERVER_BASE}/uploads/${activeModel.fileKey}`, { method: 'HEAD' });
         if (res.ok) {
-          setDownloadUrl(`http://localhost:5001/uploads/${activeModel.fileKey}`);
+          setDownloadUrl(`${SERVER_BASE}/uploads/${activeModel.fileKey}`);
         } else {
-          setDownloadUrl(`http://localhost:5001/temp/uploads/${activeModel.fileKey}`);
+          setDownloadUrl(`${SERVER_BASE}/temp/uploads/${activeModel.fileKey}`);
         }
       } catch {
-        setDownloadUrl(`http://localhost:5001/uploads/${activeModel.fileKey}`);
+        setDownloadUrl(`${SERVER_BASE}/uploads/${activeModel.fileKey}`);
       }
     };
     checkFile();
@@ -297,7 +298,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, ope
                     <Button 
                       variant="contained" 
                       color="primary"
-                      href={downloadUrl || `http://localhost:5001/uploads/${m.fileKey}`}
+                      href={downloadUrl || `${SERVER_BASE}/uploads/${m.fileKey}`}
                       download={m.name}
                       target="_blank"
                       sx={{ 
@@ -363,7 +364,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, ope
                     <Button 
                       variant="outlined" 
                       color="primary"
-                      href={downloadUrl || `http://localhost:5001/uploads/${m.fileKey}`}
+                      href={downloadUrl || `${SERVER_BASE}/uploads/${m.fileKey}`}
                       download={m.name}
                       target="_blank"
                       sx={{ 
