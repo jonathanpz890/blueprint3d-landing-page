@@ -209,11 +209,11 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
           </h4>
           <span className="flex items-center gap-2.5">
             <Mail className="h-4 w-4" style={{ color: 'var(--primary)' }} />
-            <span>hello@print3dhub.com</span>
+            <span>jonathanpz890@gmail.com</span>
           </span>
           <span className="flex items-center gap-2.5">
             <Phone className="h-4 w-4" style={{ color: 'var(--secondary)' }} />
-            <span>+972 (0) 3-3D-PRINT</span>
+            <span>050-8755548</span>
           </span>
           <span className="flex items-center gap-2.5">
             <MapPin className="h-4 w-4" style={{ color: 'var(--primary)' }} />
