@@ -293,7 +293,7 @@ export const Quote: React.FC<QuoteProps> = ({ pageParams, clearPageParams, setCu
   }, [isCatalogLoaded, pageParams, clearPageParams]);
 
   const materialRates: Record<MaterialType, number> = {
-    PLA: 0.15,
+    PLA: 0.18,
     PETG: 0.18,
     TPU: 0.26,
   };
