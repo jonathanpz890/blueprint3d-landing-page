@@ -25,7 +25,11 @@ app.use(helmet({
   crossOriginResourcePolicy: false, // Required if serving images across domains
 }));
 
-const allowedOrigins = ['https://3d.blueprint-studios.co.il', 'http://localhost:5173'];
+const allowedOrigins = [
+  'https://3d.blueprint-studios.co.il', 
+  'https://blueprint-studios-3d.netlify.app',
+  'http://localhost:5173'
+];
 
 app.use(cors({
   origin: (origin, callback) => {
