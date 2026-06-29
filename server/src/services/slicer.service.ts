@@ -128,10 +128,20 @@ export class SlicerService {
 
       // 4. Define slicing executor
       const runSlice = async (): Promise<void> => {
-        const bambuPath = process.env.BAMBU_STUDIO_PATH || '/Applications/BambuStudio.app/Contents/MacOS/BambuStudio';
+        const isLinux = process.platform === 'linux';
+        const defaultBambuPath = isLinux 
+          ? '/opt/bambustudio/AppRun' 
+          : '/Applications/BambuStudio.app/Contents/MacOS/BambuStudio';
+        
+        const bambuPath = process.env.BAMBU_STUDIO_PATH || defaultBambuPath;
         const loadSettings = `"${tempProcessPath};${tempMachinePath}"`;
         const loadFilaments = `"${tempFilamentPath}"`;
-        const cmd = `"${bambuPath}" --slice 0 --arrange 1 --ensure-on-bed --load-settings ${loadSettings} --load-filaments ${loadFilaments} --outputdir "${tempDir}" "${stlFilePath}"`;
+        
+        let cmd = `"${bambuPath}" --slice 0 --arrange 1 --ensure-on-bed --load-settings ${loadSettings} --load-filaments ${loadFilaments} --outputdir "${tempDir}" "${stlFilePath}"`;
+        
+        if (isLinux) {
+          cmd = `xvfb-run -a ${cmd}`;
+        }
 
         console.log(`[SlicerService] Executing slicing command at 100% scale: ${cmd}`);
 
