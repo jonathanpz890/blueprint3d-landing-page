@@ -14,9 +14,8 @@ export interface SlicingResult {
 }
 
 export class SlicerService {
-  // Path to local Bambu Studio application presets
   private getSystemBblDir(): string {
-    return path.join(os.homedir(), 'Library/Application Support/BambuStudio/system/BBL');
+    return path.resolve(__dirname, '../../bbl_presets');
   }
 
   // Resolves preset inherits chain recursively and merges them into a single self-contained JSON object
