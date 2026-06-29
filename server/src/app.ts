@@ -1,5 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
 import slicerRoutes from './routes/slicer.routes';
@@ -18,12 +20,35 @@ DBService.connectDB();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middlewares
+// Security Middlewares
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Required if serving images across domains
+}));
+
+const allowedOrigins = ['https://3d.blueprint-studios.co.il', 'http://localhost:5173'];
+
 app.use(cors({
-  origin: '*', // For development, allow all origins
+  origin: (origin, callback) => {
+    // Allow if no origin (curl/postman) or if it's in the allowed list
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Blocked by CORS policy'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Rate limiting to prevent DDoS/Brute-force
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // Limit each IP to 200 requests per `window`
+  message: { error: 'Too many requests, please try again later.' },
+  standardHeaders: true, 
+  legacyHeaders: false,
+});
+app.use(limiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
