@@ -7,12 +7,10 @@ exports.SlicerService = void 0;
 const child_process_1 = require("child_process");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const os_1 = __importDefault(require("os"));
 const uuid_1 = require("uuid");
 class SlicerService {
-    // Path to local Bambu Studio application presets
     getSystemBblDir() {
-        return path_1.default.join(os_1.default.homedir(), 'Library/Application Support/BambuStudio/system/BBL');
+        return path_1.default.resolve(__dirname, '../../bbl_presets');
     }
     // Resolves preset inherits chain recursively and merges them into a single self-contained JSON object
     resolveConfig(filePath) {

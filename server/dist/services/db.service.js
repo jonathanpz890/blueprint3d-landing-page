@@ -12,6 +12,7 @@ const Filament_1 = __importDefault(require("../models/Filament"));
 const GalleryItem_1 = __importDefault(require("../models/GalleryItem"));
 const Order_1 = __importDefault(require("../models/Order"));
 const ModelingRequest_1 = __importDefault(require("../models/ModelingRequest"));
+const AnalyticsEvent_1 = __importDefault(require("../models/AnalyticsEvent"));
 const DEFAULT_FILAMENTS = [
     // PLA
     { id: 'pla_black', material: ['PLA'], nameEn: 'Solid Black', nameHe: 'שחור אטום', hex: '#111827', stock: true, active: true },
@@ -353,6 +354,103 @@ class DBService {
             notes: doc.notes || '',
             status: doc.status,
             createdAt: doc.createdAt.toISOString()
+        };
+    }
+    // ======================= Analytics =======================
+    static async trackEvent(data) {
+        await AnalyticsEvent_1.default.create(data);
+    }
+    static async getAnalyticsSummary(days = 30) {
+        const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        // --- Page views per page ---
+        const pageViewsRaw = await AnalyticsEvent_1.default.aggregate([
+            { $match: { eventType: 'page_view', createdAt: { $gte: since } } },
+            { $group: { _id: '$page', count: { $sum: 1 } } },
+            { $sort: { count: -1 } }
+        ]);
+        // --- Unique sessions per page ---
+        const uniqueSessionsRaw = await AnalyticsEvent_1.default.aggregate([
+            { $match: { eventType: 'page_view', createdAt: { $gte: since } } },
+            { $group: { _id: { page: '$page', session: '$sessionId' } } },
+            { $group: { _id: '$_id.page', uniqueSessions: { $sum: 1 } } },
+            { $sort: { uniqueSessions: -1 } }
+        ]);
+        const uniqueSessionsMap = {};
+        uniqueSessionsRaw.forEach((r) => { uniqueSessionsMap[r._id] = r.uniqueSessions; });
+        const pageViews = pageViewsRaw.map((r) => ({
+            page: r._id || 'unknown',
+            views: r.count,
+            uniqueSessions: uniqueSessionsMap[r._id] || 0
+        }));
+        // --- Quote funnel ---
+        const [qStarted, qPriced, qAbandoned, qOrdered] = await Promise.all([
+            AnalyticsEvent_1.default.countDocuments({ eventType: 'quote_started', createdAt: { $gte: since } }),
+            AnalyticsEvent_1.default.countDocuments({ eventType: 'quote_priced', createdAt: { $gte: since } }),
+            AnalyticsEvent_1.default.countDocuments({ eventType: 'quote_abandoned', createdAt: { $gte: since } }),
+            AnalyticsEvent_1.default.countDocuments({ eventType: 'quote_ordered', createdAt: { $gte: since } })
+        ]);
+        const abandonmentRate = qPriced > 0 ? Math.round((qAbandoned / qPriced) * 100) : 0;
+        const conversionRate = qStarted > 0 ? Math.round((qOrdered / qStarted) * 100) : 0;
+        // --- Total sessions ---
+        const totalSessionsResult = await AnalyticsEvent_1.default.aggregate([
+            { $match: { createdAt: { $gte: since } } },
+            { $group: { _id: '$sessionId' } },
+            { $count: 'total' }
+        ]);
+        const totalSessions = totalSessionsResult[0]?.total || 0;
+        // --- Events over time (daily buckets) ---
+        const eventsOverTime = await AnalyticsEvent_1.default.aggregate([
+            { $match: { createdAt: { $gte: since } } },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: '$createdAt' },
+                        month: { $month: '$createdAt' },
+                        day: { $dayOfMonth: '$createdAt' }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
+        ]);
+        const dailyEvents = eventsOverTime.map((r) => ({
+            date: `${r._id.year}-${String(r._id.month).padStart(2, '0')}-${String(r._id.day).padStart(2, '0')}`,
+            count: r.count
+        }));
+        // --- Top explored models ---
+        const topModels = await AnalyticsEvent_1.default.aggregate([
+            { $match: { eventType: 'explore_model_opened', createdAt: { $gte: since } } },
+            { $group: { _id: { modelName: '$payload.modelName', thingId: '$payload.thingId' }, opens: { $sum: 1 } } },
+            { $sort: { opens: -1 } },
+            { $limit: 10 }
+        ]);
+        // --- Other event counts ---
+        const [modelingSubmitted, contactSubmitted] = await Promise.all([
+            AnalyticsEvent_1.default.countDocuments({ eventType: 'modeling_request_submitted', createdAt: { $gte: since } }),
+            AnalyticsEvent_1.default.countDocuments({ eventType: 'contact_form_submitted', createdAt: { $gte: since } })
+        ]);
+        return {
+            period: { days, since: since.toISOString() },
+            totalSessions,
+            pageViews,
+            quoteFunnel: {
+                started: qStarted,
+                priced: qPriced,
+                abandoned: qAbandoned,
+                ordered: qOrdered,
+                abandonmentRate,
+                conversionRate
+            },
+            dailyEvents,
+            topExploreModels: topModels.map((r) => ({
+                modelName: r._id.modelName || 'Unknown',
+                thingId: r._id.thingId || '',
+                opens: r.opens
+            })),
+            otherEvents: {
+                modelingSubmitted,
+                contactSubmitted
+            }
         };
     }
 }

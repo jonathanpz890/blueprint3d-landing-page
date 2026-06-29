@@ -22,4 +22,7 @@ router.put('/gallery/:id', management_controller_1.checkAuth, management_control
 router.delete('/gallery/:id', management_controller_1.checkAuth, management_controller_1.deleteGalleryItemController);
 router.get('/modeling-requests', management_controller_1.checkAuth, management_controller_1.getModelingRequestsController);
 router.put('/modeling-requests/:id/status', management_controller_1.checkAuth, management_controller_1.updateModelingRequestStatusController);
+// Analytics endpoints
+router.post('/analytics/event', management_controller_1.trackEventController); // Public — client-side tracking
+router.get('/analytics', management_controller_1.checkAuth, management_controller_1.getAnalyticsController); // Protected — management dashboard
 exports.default = router;

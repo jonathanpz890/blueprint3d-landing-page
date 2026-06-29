@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateModelingRequestStatusController = exports.addModelingRequestController = exports.getModelingRequestsController = exports.uploadImageController = exports.deleteGalleryItemController = exports.updateGalleryItemController = exports.addGalleryItemController = exports.getGalleryController = exports.deleteFilamentController = exports.addFilamentController = exports.updateFilamentController = exports.getFilamentsController = exports.updateOrderStatusController = exports.addOrderController = exports.getOrdersController = exports.loginAdminController = exports.checkAuth = void 0;
+exports.getAnalyticsController = exports.trackEventController = exports.updateModelingRequestStatusController = exports.addModelingRequestController = exports.getModelingRequestsController = exports.uploadImageController = exports.deleteGalleryItemController = exports.updateGalleryItemController = exports.addGalleryItemController = exports.getGalleryController = exports.deleteFilamentController = exports.addFilamentController = exports.updateFilamentController = exports.getFilamentsController = exports.updateOrderStatusController = exports.addOrderController = exports.getOrdersController = exports.loginAdminController = exports.checkAuth = void 0;
 const db_service_1 = require("../services/db.service");
 const AUTH_TOKEN = 'secret-admin-session-token-987654321';
 // Authentication middleware check helper
@@ -311,3 +311,35 @@ const updateModelingRequestStatusController = async (req, res) => {
     }
 };
 exports.updateModelingRequestStatusController = updateModelingRequestStatusController;
+// ======================= Analytics =======================
+const trackEventController = async (req, res) => {
+    const { eventType, sessionId, page, language, payload } = req.body;
+    const validTypes = [
+        'page_view', 'quote_started', 'quote_priced', 'quote_abandoned',
+        'quote_ordered', 'explore_model_opened', 'modeling_request_submitted', 'contact_form_submitted'
+    ];
+    if (!eventType || !validTypes.includes(eventType) || !sessionId) {
+        res.status(400).json({ error: 'Invalid analytics event payload' });
+        return;
+    }
+    try {
+        await db_service_1.DBService.trackEvent({ eventType, sessionId, page: page || '', language: language || 'en', payload: payload || {} });
+        res.status(200).json({ success: true });
+    }
+    catch (error) {
+        // Silently succeed on analytics errors — don't break the client
+        res.status(200).json({ success: false, warning: 'Event not stored' });
+    }
+};
+exports.trackEventController = trackEventController;
+const getAnalyticsController = async (req, res) => {
+    const days = parseInt(req.query.days) || 30;
+    try {
+        const summary = await db_service_1.DBService.getAnalyticsSummary(days);
+        res.status(200).json({ success: true, data: summary });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to fetch analytics', message: error.message });
+    }
+};
+exports.getAnalyticsController = getAnalyticsController;
