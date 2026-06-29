@@ -407,7 +407,7 @@ export const Quote: React.FC<QuoteProps> = ({ pageParams, clearPageParams, setCu
         return {
           ...m,
           material: newMat,
-          color: materialColors[newMat]?.[0]?.hex || '#111827',
+          color: (materialColors[newMat] || []).find(c => c.stock)?.hex || materialColors[newMat]?.[0]?.hex || '#111827',
           slicedData: null,
           error: null
         };
